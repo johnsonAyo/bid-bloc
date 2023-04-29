@@ -1,9 +1,9 @@
 import React from "react";
-import AunctionBids from "../components/bids/AunctionBids";
+import AuctionSealbid from "../../components/bids/AuctionSealbid";
 import { Flex } from "@chakra-ui/react";
 
 const placeBid = () => {
-  return <AunctionBids />;
+  return <AuctionSealbid />;
 };
 
 export default placeBid;

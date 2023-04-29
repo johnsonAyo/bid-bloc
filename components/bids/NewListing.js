@@ -8,41 +8,87 @@ import {
   Box,
   Image,
   Select,
+  NumberInput,
+  NumberInputField,
+  NumberInputStepper,
+  NumberIncrementStepper,
+  NumberDecrementStepper,
 } from "@chakra-ui/react";
+import { useStateContext } from '../../context';
+
 import { ArrowBackIcon } from "@chakra-ui/icons";
+import { useRouter } from "next/router";
+
+export async function getStaticProps(context) {
+  console.log(context.params); // return { movieId: 'Mortal Kombat' }
+  return {
+    props: {}, // will be passed to the page component as props
+  }
+}
 
 const NewListing = () => {
+  const router = useRouter();
+  const query = router.query;
+  const tokenId = query.id;
+
+  const { address, message, startauctionParams, startAuctionParams, startAuction, getNFTData, getAllNFTs, getMyNfts, mynft, listingParams, updateListingParams } = useStateContext();
   const [currentStep, setCurrentStep] = useState("1");
-  const Step1 = () => {
+  //listingParams.tokenId = tokenId;
+
+  const formChange = (event) => {
+    updateListingParams((prev) => ({
+      ...prev,
+      [event.target.name]: event.target.value
+    }))
+  }
+  console.log("amy", startauctionParams);
+  const handleFormFieldChange = (fieldName, e) => {
+    startauctionParams.tokenId = tokenId;
+    startAuctionParams({ ...startauctionParams, [fieldName]: e.target.value })
+  }
+
+ //console.log(listingParams);
+  const auctionstart = () => {
+    startAuction()
+  }
+
+    const Step1 = () => {
     return (
       <Flex direction="column" marginY="5rem" paddingX="15rem" gap={5}>
         <Flex justifyContent="center">
-          <Text fontSize="4xl" textAlign="center">
+          <Text fontSize="4xl" textAlign="center" onClick={getAllNFTs}>
             Create New Listing
           </Text>
         </Flex>
-
+        
         <Text fontSize="md" textAlign="center">
           Create a new NFT and mint it into one of your own ERC-1155 contract
         </Text>
+        {/* <Box>
+          <Text mb="5px" fontWeight="bold">
+            TokenId:
+          </Text>
+          <Input type="number" placeholder="your nft token id" size="lg" onChange={(e) => handleFormFieldChange('tokenId', e)}  value={startauctionParams.tokenId} />
+        </Box> */}
         <Box>
           <Text mb="5px" fontWeight="bold">
-            Name:
+            Price:
           </Text>
-          <Input placeholder="Here is a sample placeholder" size="lg" />
+          <Input type="number" name="datetime" step={0.1} onChange={(e) => handleFormFieldChange('price', e)} value={startauctionParams.price} />
+          {/* <NumberInput defaultValue={0} step={0.1}  name={'price'}  value={listingParams.price} onChange={(value) => formChange({ target: { name: 'price', value }})} >
+                <NumberInputField />
+                <NumberInputStepper>
+                  <NumberIncrementStepper />
+                  <NumberDecrementStepper />
+                </NumberInputStepper>
+          </NumberInput> */}
         </Box>
-        <Box>
-          <Text mb="5px" fontWeight="bold">
-            External Links:
-          </Text>
-          <Input placeholder="Here is a sample placeholder" size="lg" />
-        </Box>
-        <Box>
+        {/* <Box>
           <Text mb="5px" fontWeight="bold">
             Description:
           </Text>
           <Textarea placeholder="Here is a sample placeholder" size="lg" />
-        </Box>
+        </Box> */}
         <Flex justifyContent="center">
           <Button
             colorScheme="black"
@@ -73,10 +119,37 @@ const NewListing = () => {
             mt="3"
           />
           <Text fontSize="4xl" textAlign="center" width="95%">
-            Create New Listing
+            Setup Auction Duration Time In Seconds
           </Text>
         </Flex>
-        <Flex direction="column" px="10rem" gap={5}>
+        <Box>
+          <Text mb="5px" fontWeight="bold">
+            Auction Duration(s):
+          </Text>
+          <Input type="datetime-local" name="datetime" onChange={(e) => handleFormFieldChange('auction_duration', e)} value={startauctionParams.auction_duration} />
+          {/* <NumberInput defaultValue={60} step={60} name={'auction_duration'} value={listingParams.auction_duration} onChange={(value) => formChange({ target: { name: 'auction_duration', value }})} >
+                <NumberInputField />
+                <NumberInputStepper>
+                  <NumberIncrementStepper />
+                  <NumberDecrementStepper />
+                </NumberInputStepper>
+          </NumberInput> */}
+        </Box>
+
+        <Box>
+          <Text mb="5px" fontWeight="bold">
+            Reveal Duration(s):
+          </Text>
+          <Input type="datetime-local" name="datetime" onChange={(e) => handleFormFieldChange('auction_reveal', e)} value={startauctionParams.auction_reveal} />
+          {/* <NumberInput defaultValue={60} step={60} name={'auction_reveal'} value={listingParams.auction_reveal} onChange={(value) => formChange({ target: { name: 'auction_reveal', value }})}>
+                <NumberInputField />
+                <NumberInputStepper>
+                  <NumberIncrementStepper />
+                  <NumberDecrementStepper />
+                </NumberInputStepper>
+          </NumberInput> */}
+        </Box>
+        {/* <Flex direction="column" px="10rem" gap={5}>
           <Text fontSize="md">
             Create a new NFT and mint it into one of your own ERC-1155 contract
           </Text>
@@ -121,7 +194,7 @@ const NewListing = () => {
               <option value="option3">Arbitrium</option>
             </Select>
           </Box>
-        </Flex>
+        </Flex> */}
 
         <Flex justifyContent="center">
           <Button
@@ -135,10 +208,13 @@ const NewListing = () => {
             borderColor="white"
             bgColor="black"
             width="40%"
+            onClick={auctionstart}
           >
             Create
           </Button>
         </Flex>
+
+        <Box>{message}</Box>
       </Flex>
     );
   };
